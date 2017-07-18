@@ -240,8 +240,8 @@ public class Main extends Application {
 	{
 		PixelReader pixelReader = img.getPixelReader();
 		//cropping values once adjusted, start comparing values to middle
-		int maxX = 0; int minX = 0;//(int) img.getWidth(); //problem with initial cropping settings?
-		int maxY = 0; int minY = 0;//(int) img.getHeight(); 
+		int maxX = 0; int minX = (int) img.getWidth(); //problem with initial cropping settings?
+		int maxY = 0; int minY = (int) img.getHeight(); 
 		System.out.println("minY Start = "+ minY+ "minX start = " + minX);
 		double transparencyTolerance = 0.05;
 		
@@ -260,13 +260,20 @@ public class Main extends Application {
 				}
 			}
 		}
-		System.out.println("Dimensions are: (x,y,maxx,maxy) = "+ minX+", "+ minY+", "+ maxX + ", " + maxY );
-		WritableImage newImg = new WritableImage(0, 0);
+		int newWidth = maxX-minX;
+		int newHeight = maxY-minY;
+		System.out.println("Dimensions are: (x,y,maxX,maxY) = "+ minX+", "+ minY+", maxX: "+ maxX + ", maxY: " + maxY );
+		System.out.println("Dimensions are: (x,y,width,height) = "+ minX+", "+ minY+", "+ newWidth + ", " + newHeight );
+		
+		WritableImage newImg = new WritableImage(10, 10);
 		try {
 			//new cropped image
-			newImg = new WritableImage(pixelReader, minX, minY, maxX, maxY);
-		}catch (ArrayIndexOutOfBoundsException ex)
-		{ex.printStackTrace();}
+			newImg = new WritableImage(pixelReader, minX, minY, newWidth, newHeight);
+		}catch (ArrayIndexOutOfBoundsException ex){
+			ex.printStackTrace();
+		}catch (IllegalArgumentException ex){
+			ex.printStackTrace();
+		}
 		
 		return newImg;
 	}
